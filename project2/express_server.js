@@ -1,6 +1,8 @@
 var express = require("express");
 var app = express();
 var PORT = process.env.PORT || 8080; //default
+
+
 //Express app need to use EJS as templating engine.
 app.set("view engine", "ejs");
 
@@ -32,6 +34,12 @@ app.get("/urls", function(request, response){
 
   // response.render("urls_index", { urls: urlDatabase });
 });
+
+app.get("/urls/:id", function(request, response){
+  let templateVars = { shortURL: request.params.id, urls: urlDatabase };
+  response.render("urls_show", templateVars);
+});
+
 
 app.listen(PORT, function(){
   console.log(`Example app listening on port ${PORT}!`);
