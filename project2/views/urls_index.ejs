@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang= "en">
+<head>
+  <title>Tiny App</title>
+</head>
+<body>
+    <h2> List of URLS </h2>
+      <ul>
+        <% for(url in urls) { %>
+          <li>
+            <%= `[URLs]: ${urls[url]},   [Shortened-URL]: ${url}` %>
+          </li>
+        <% } %>
+      </ul>
+</body>
+</html>
