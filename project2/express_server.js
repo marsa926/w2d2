@@ -12,6 +12,17 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+//generate random shortURL
+function generateRandomString(){
+  let randomStr = "";
+  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (var i = 0; i < 6; i++){
+      randomStr += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return randomStr;
+}
+
+
 //this will print out Hello! on http://localhost:8008
 // app.get("/", function(request, response){
 //   response.end("Hello!");
@@ -31,16 +42,26 @@ var urlDatabase = {
 app.get("/urls", function(request, response){
   let templateVars = { urls: urlDatabase };
   response.render("urls_index", templateVars);
-
   // response.render("urls_index", { urls: urlDatabase });
 });
 
+//for urls_show, showing one shortURL and it's address
 app.get("/urls/:id", function(request, response){
   let templateVars = { shortURL: request.params.id, urls: urlDatabase };
   response.render("urls_show", templateVars);
 });
 
+app.get("/urls/new", function(request, response){
+  response.render("urls_new");
+});
 
+app.post("urls/new", function(request, response){
+  console.log(request.body.form); //debug statement to see POST para
+  response.send("OK");
+});
+
+
+//listens to port if its working or not
 app.listen(PORT, function(){
   console.log(`Example app listening on port ${PORT}!`);
 });
