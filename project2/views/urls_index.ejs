@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang= "en">
 <head>
-  <title>Tiny App</title>
+ <style>
+  #main {
+  background-image: url("http://wallzoa.com/wp-content/uploads/2013/05/pastel-rainbow-backgrounds.jpg");
+  background-size:100% 100vh;
+  text-align: center;
+  font-family: "Arial Black";
+}
+  </style>
+   <% include ./partials/_headers %>
 </head>
-<body>
-    <h1> List of URLS </h1>
+<body id = "main">
+    <h2 style="margin-top: 100px"> List of URLS </h2>
       <ul>
         <% for(url in urls) { %>
           <li>
-            <%= `[URLs]: ${urls[url]},   [Shortened-URL]: ${url}` %>
+          <%= `URLs: ${urls[url]} ---->   Shortened-URL: ${url}`%>
+            <input type= "submit" value = "Edit" onclick="location.href='/urls/<%=url%>';">
+            <form style = "display : inline;" method = "POST" action = "/urls/<%=url%>/delete">
+            <input type= "submit" value = "Delete">
+            </form>
           </li>
-        <% } %>
+          <% }; %>
       </ul>
 </body>
 </html>

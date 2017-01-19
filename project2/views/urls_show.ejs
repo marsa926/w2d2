@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title> </title>
-</head>
-<body>
-<% include ./partials/_headers %>
-<h1>Tiny App 1st</h1>
-<p> <%= shortURL %> / <%= urls[shortURL] %></p>
+  <head>
+  <style>
+  #main {
+  background-image: url("http://wallzoa.com/wp-content/uploads/2013/05/pastel-rainbow-backgrounds.jpg");
+  background-size:100% 100vh;
+  text-align: center;
+  font-family: "Arial Black";
 
-</body>
+}
+  </style>
+  </head>
+    <body id = "main">
+      <% include ./partials/_headers %>
+      <div style = "margin-top: 100px;">
+          <h1><b> ShortURL: <mark><%= shortURL %> </mark> <b></h1>
+                <form method ="POST" action="/urls/<%=shortURL%>/update">
+                  <input id="newlongURL" type="text" name="newlongURL" placeholder="http://" style="width: 300px">
+                 <input type="submit" value="Update">
+            </form>
+      </div>
+    </body>
 </html>
