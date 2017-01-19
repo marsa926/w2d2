@@ -17,7 +17,13 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
- function generateRandomString(){
+const userData = {
+  "123552": {id: "123552", email: "user@example.com", password: "dishwasher-funk"}
+};
+
+
+
+function generateRandomString(){
     var shortURL = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for (var i = 0; i < 6; i++){
@@ -47,6 +53,10 @@ function updateDataBase(shortURL, newlongURL){
 // app.get("/hello", function(request, response){
 //   response.end("<html><body>HELLO <b>WORLD</b></body></html>\n");
 // });
+
+
+
+
 
 //SETS THE /urls/ PAGE LAYOUT
 app.get("/urls", (request, response) =>{
@@ -85,6 +95,10 @@ app.post("/urls/new", (request, response) =>{
   response.redirect(`/urls/${shortURL}`);
 });
 
+
+
+
+
 //DELETE THE urls on /URL/
 app.post("/urls/:shortURL/delete", (request, response) =>{
   let shortURL = request.params.shortURL;
@@ -100,8 +114,6 @@ app.post("/urls/:shortURL/update",(request, response) =>{
 response.redirect("/urls/");
 });
 
-
-
 //SHOWS THE /URLS/shortURLS/ PAGE
 app.get("/urls/:id", (request, response) =>{
   let templateVars = {
@@ -109,8 +121,10 @@ app.get("/urls/:id", (request, response) =>{
     urls: urlDatabase,
     username: request.cookies["username"] };
   response.render("urls_show", templateVars);
-
 });
+
+
+
 
 
 //LOGIN ROUTE
@@ -126,14 +140,37 @@ app.post("/login", (request, response) =>{
   response.redirect("/urls");
 });
 
+
+
+
 //LOGOUT ROUTE
 app.get("/logout", (request, response) =>{
   response.redirect('/urls');
 });
 
-//DISPLAY THE USERNAME LOGOUT
+//DISPLAY THE USERNAME LOG-OUT
 app.post("/logout", (request, response) =>{
   response.cookie("username", "");
+  response.redirect("/urls");
+});
+
+
+
+
+//DISPLAY THE REGISTRATION PAGE
+app.get("/register", (request, response)=>{
+  response.render("url_registration");
+});
+
+//REGISTRAION PART
+app.post("/register",(request, response)=>{
+
+  var email = request.body.email;
+  var password = request.body.password;
+  var userid = generateRandomString();
+  userData[userid] =  {id: userid, email: email, password: password};
+  //response.render("url_registration", userData[userid]);
+  response.cookie("userData[userid]");
   response.redirect("/urls");
 });
 

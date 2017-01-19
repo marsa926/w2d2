@@ -9,21 +9,24 @@
 </style>
 
 
-<li>
+
   <% if(username) { %>
-    <%= username %> : <%= username %>
+     username :  <%= username %>
     <form method="POST" action="/logout" style="display : inline;">
       <input type="Submit" value="log out">
     </form>
-</li>
+
   <% } else {%>
-      <form method="POST" action="/login" style="display : inline;">
-        <input name="username" type="text" style="width: 100px" >
+      <form method="POST" action="/login">
+        <input name="username" placeholder="username" type="text" style="width: 100px, display : inline;" >
+        <input name="password" placeholder="password" tyle="text" style="width: 100px, display : inline;">
         <input type="Submit" value="sign in">
       </form>
 
-      <form method="POST" action="/register" style="display : inline;">
-        <input type="Submit" value="register now">
+
+
+      <form method="POST" action="/register">
+        <input type="Submit" value="register now" style="display : inline;">
       </form>
   <% } %>
 
