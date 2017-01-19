@@ -1,11 +1,33 @@
 <style>
 #header{
   opacity: 0.4;
-  font-size: 80px;
   font-family: "Arial Black";
   }
+#title{
+   font-size: 80px;
+}
 </style>
 
-<header id = "header" >
- <b> Tiny App </b>
-</header>
+
+<li>
+  <% if(username) { %>
+    <%= username %> : <%= username %>
+    <form method="POST" action="/logout" style="display : inline;">
+      <input type="Submit" value="log out">
+    </form>
+</li>
+  <% } else {%>
+      <form method="POST" action="/login" style="display : inline;">
+        <input name="username" type="text" style="width: 100px" >
+        <input type="Submit" value="sign in">
+      </form>
+
+      <form method="POST" action="/register" style="display : inline;">
+        <input type="Submit" value="register now">
+      </form>
+  <% } %>
+
+
+
+  <h1 id = "title"> Tiny App </h1>
+

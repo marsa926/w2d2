@@ -5,8 +5,9 @@
   "main": "express_server.js",
   "dependencies": {
     "body-parser": "^1.15.2",
-    "express": "^4.14.0",
-    "ejs": "^2.5.5"
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.5",
+    "express": "^4.14.0"
   },
   "devDependencies": {},
   "scripts": {

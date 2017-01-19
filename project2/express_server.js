@@ -1,11 +1,16 @@
-var express = require("express");
+var express = require('express');
 var app = express();
 var PORT = process.env.PORT || 8080; //default
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+
+
 
 //Express app need to use EJS as templating engine.
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(cookieParser());
+
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -43,24 +48,25 @@ function updateDataBase(shortURL, newlongURL){
 //   response.end("<html><body>HELLO <b>WORLD</b></body></html>\n");
 // });
 
+//SETS THE /urls/ PAGE LAYOUT
 app.get("/urls", (request, response) =>{
-  let templateVars = { urls: urlDatabase };
+  let templateVars = {
+    urls: urlDatabase,
+    username: request.cookies["username"] };
   response.render("urls_index", templateVars);
   // response.render("urls_index", { urls: urlDatabase });
 });
 
 //for urls_show, showing one shortURL and it's address
 
-
+//SETS THE /URLS/NEW PAGE LAYOUT
 app.get("/urls/new", (request, response) =>{
-  response.render("urls_new");
+  let templateVars = {
+    username: request.cookies["username"] };
+  response.render("urls_new", templateVars);
 });
 
-// app.post("/urls", (request, response) =>{
-//   console.log(request.body); //debug statement to see POST para
-//   response.send(" OK ");
 
-// });
 
 
 
@@ -79,14 +85,14 @@ app.post("/urls/new", (request, response) =>{
   response.redirect(`/urls/${shortURL}`);
 });
 
-//delete the url
+//DELETE THE urls on /URL/
 app.post("/urls/:shortURL/delete", (request, response) =>{
   let shortURL = request.params.shortURL;
   delete urlDatabase[shortURL];
   response.redirect("/urls");
 });
 
-//update the url
+//UPDATE THE /URL/
 app.post("/urls/:shortURL/update",(request, response) =>{
   let shortURL = request.params.shortURL;
   let newlongURL = request.body.newlongURL;
@@ -96,10 +102,39 @@ response.redirect("/urls/");
 
 
 
-
+//SHOWS THE /URLS/shortURLS/ PAGE
 app.get("/urls/:id", (request, response) =>{
-  let templateVars = { shortURL: request.params.id, urls: urlDatabase };
+  let templateVars = {
+    shortURL: request.params.id,
+    urls: urlDatabase,
+    username: request.cookies["username"] };
   response.render("urls_show", templateVars);
+
+});
+
+
+//LOGIN ROUTE
+app.get("/login", (request, response) =>{
+  response.redirect('/urls/');
+});
+
+
+// DISPLAY THE USERNAME ON _HEADERS
+app.post("/login", (request, response) =>{
+  let username = request.body.username;
+  response.cookie("username", username);
+  response.redirect("/urls");
+});
+
+//LOGOUT ROUTE
+app.get("/logout", (request, response) =>{
+  response.redirect('/urls');
+});
+
+//DISPLAY THE USERNAME LOGOUT
+app.post("/logout", (request, response) =>{
+  response.cookie("username", "");
+  response.redirect("/urls");
 });
 
 
