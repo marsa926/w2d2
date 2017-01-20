@@ -3,7 +3,7 @@ var app = express();
 var PORT = process.env.PORT || 8080; //default
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-
+const bcrypt = require('bcrypt');
 
 
 //Express app need to use EJS as templating engine.
@@ -11,18 +11,22 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser());
 
+////////////////////////////////////////////////////////
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
+
 const userData = {
-  "username": {id: "username", email: "user@example.com", password: "123"}
+  "12345": {id: "12345", email: "user@example.com", password: "123"}
 };
 
 
 
+
+////////////////////////////////////////////////////////
 function checkEmail(email){
   for (var userid in userData){
     if (email === userData[userid]["email"]){
@@ -46,6 +50,7 @@ function updateDataBase(shortURL, newlongURL){
   urlDatabase[shortURL] = newlongURL;
   console.log(`updated ${shortURL} belongs with ${newlongURL}`);
 }
+////////////////////////////////////////////////////////
 
 //this will print out Hello! on http://localhost:8008
 // app.get("/", function(request, response){
@@ -65,7 +70,7 @@ function updateDataBase(shortURL, newlongURL){
 
 
 
-
+////////////////////////////////////////////////////////
 
 //SETS THE /urls/ PAGE LAYOUT
 app.get("/urls", (request, response) =>{
@@ -91,7 +96,7 @@ app.get("/urls/new", (request, response) =>{
   }
 });
 
-
+////////////////////////////////////////////////////////
 
 app.get("/u/:shortURL", (request, response) =>{
   let longURL = urlDatabase[request.params.shortURL];
@@ -108,8 +113,7 @@ app.post("/urls/new", (request, response) =>{
 });
 
 
-
-
+////////////////////////////////////////////////////////
 
 //DELETE THE urls on /URL/
 app.post("/urls/:shortURL/delete", (request, response) =>{
@@ -145,7 +149,7 @@ app.get("/urls/:id", (request, response) =>{
 });
 
 
-
+////////////////////////////////////////////////////////
 
 
 //LOGIN ROUTE
@@ -159,8 +163,14 @@ app.post("/login", (request, response) =>{
   let email = request.body.email;
   let userid = checkEmail(email);
   let password = request.body.password;
+  console.log(userid);
+  console.log(email);
+  console.log(password);
+  console.log(userData);
 
-  if(userid && userData[userid]["password"] === password){
+  let passwordCheck = bcrypt.compareSync(password, userData[userid]["password"]);
+
+  if(passwordCheck){
 
     response.cookie("userid", userid);
 
@@ -170,7 +180,7 @@ app.post("/login", (request, response) =>{
   response.redirect("/urls");
 });
 
-
+////////////////////////////////////////////////////////
 
 
 //LOGOUT ROUTE
@@ -184,7 +194,7 @@ app.post("/logout", (request, response) =>{
   response.redirect("/urls");
 });
 
-
+////////////////////////////////////////////////////////
 
 
 //DISPLAY THE REGISTRATION PAGE
@@ -197,9 +207,10 @@ app.post("/register",(request, response)=>{
 
   var email = request.body.email;
   var password = request.body.password;
+  var hashed_password = bcrypt.hashSync(password, 10);
   var userid = generateRandomString();
   var emailCheck =  checkEmail(email);
-  userData[userid] =  {"id": userid, "email": email, "password": password};
+  userData[userid] =  {"id": userid, "email": email, "password": hashed_password};
   if(emailCheck){
     response.status(404).send("Account already exist!");
   } else {
@@ -209,7 +220,7 @@ app.post("/register",(request, response)=>{
 });
 
 
-
+////////////////////////////////////////////////////////
 
 //listens to port if its working or not
 app.listen(PORT, () =>{
