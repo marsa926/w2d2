@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 // app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
-  keys: [/* secret keys */],
+  keys: ["SchoolExerciseBook"],
   maxAge: 24 * 60 * 60 * 1000 //A day
 }));
 
@@ -84,7 +84,7 @@ app.get("/urls", (request, response) =>{
   let templateVars = {
     urls: urlDatabase,
     userDatabase: userData,
-    userid: request.cookies["userid"] };
+    userid: request.session["userid"] };
   response.render("urls_index", templateVars);
   // response.render("urls_index", { urls: urlDatabase });
 });
@@ -95,7 +95,7 @@ app.get("/urls", (request, response) =>{
 app.get("/urls/new", (request, response) =>{
  let templateVars =  {
     userDatabase: userData,
-    userid: request.cookies["userid"] };
+    userid: request.session["userid"] };
   if (!templateVars){
     response.status(403).send("You must log-in first!");
   } else {
@@ -127,7 +127,7 @@ app.post("/urls/:shortURL/delete", (request, response) =>{
   let shortURL = request.params.shortURL;
   let templateVars =  {
     userDatabase: userData,
-    userid: request.cookies["userid"] };
+    userid: request.session["userid"] };
     if (!templateVars){
     response.status(403).send("You must log-in first!");
   } else {
@@ -149,7 +149,7 @@ app.get("/urls/:id", (request, response) =>{
   let templateVars = {
     shortURL: request.params.id,
     urls: urlDatabase,
-    userid: request.cookies["userid"],
+    userid: request.session["userid"],
     userDatabase: userData
   };
   response.render("urls_show", templateVars);
@@ -174,7 +174,7 @@ app.post("/login", (request, response) =>{
 
   if(passwordCheck){
 
-    response.cookie("userid", userid);
+    request.session["userid"] = userid;
 
   } else {
     response.status(403).send('Something Wrong');
@@ -192,7 +192,8 @@ app.get("/logout", (request, response) =>{
 
 //DISPLAY THE USERNAME LOG-OUT
 app.post("/logout", (request, response) =>{
-  response.cookie("userid", "");
+
+  request.session["userid"] = "";
   response.redirect("/urls");
 });
 
@@ -216,7 +217,8 @@ app.post("/register",(request, response)=>{
   if(emailCheck){
     response.status(404).send("Account already exist!");
   } else {
-  response.cookie("userid",userData[userid].id);
+
+  request.session["userid"] = userData[userid].id;
   response.redirect("/urls");
 }
 });
