@@ -18,10 +18,19 @@ var urlDatabase = {
 };
 
 const userData = {
-  "123552": {id: "123552", email: "user@example.com", password: "dishwasher-funk"}
+  "123552": {id: "123552", email: "user@example.com", password: "123"}
 };
 
 
+
+function checkEmail(email){
+  for (var userid in userData){
+    if (email === userData[userid]["email"]){
+      return userData[userid]["id"];
+    }
+  }
+  return false;
+}
 
 function generateRandomString(){
     var shortURL = "";
@@ -62,7 +71,8 @@ function updateDataBase(shortURL, newlongURL){
 app.get("/urls", (request, response) =>{
   let templateVars = {
     urls: urlDatabase,
-    username: request.cookies["username"] };
+    userDatabase: userData,
+    userid: request.cookies["userid"] };
   response.render("urls_index", templateVars);
   // response.render("urls_index", { urls: urlDatabase });
 });
@@ -71,13 +81,15 @@ app.get("/urls", (request, response) =>{
 
 //SETS THE /URLS/NEW PAGE LAYOUT
 app.get("/urls/new", (request, response) =>{
-  let templateVars = {
-    username: request.cookies["username"] };
-  response.render("urls_new", templateVars);
+ let templateVars =  {
+    userDatabase: userData,
+    userid: request.cookies["userid"] };
+  if (!templateVars){
+    response.status(403).send("You must log-in first!");
+  } else {
+    response.render("urls_new", templateVars);
+  }
 });
-
-
-
 
 
 
@@ -119,7 +131,9 @@ app.get("/urls/:id", (request, response) =>{
   let templateVars = {
     shortURL: request.params.id,
     urls: urlDatabase,
-    username: request.cookies["username"] };
+    userid: request.cookies["userid"],
+    userDatabase: userData
+  };
   response.render("urls_show", templateVars);
 });
 
@@ -129,14 +143,23 @@ app.get("/urls/:id", (request, response) =>{
 
 //LOGIN ROUTE
 app.get("/login", (request, response) =>{
-  response.redirect('/urls/');
+  response.render("url_login");
 });
 
 
 // DISPLAY THE USERNAME ON _HEADERS
 app.post("/login", (request, response) =>{
-  let username = request.body.username;
-  response.cookie("username", username);
+  let email = request.body.email;
+  let userid = checkEmail(email);
+  let password = request.body.password;
+
+  if(userid && userData[userid]["password"] === password){
+
+    response.cookie("userid", userid);
+
+  } else {
+    response.status(403).send('Something Wrong');
+  }
   response.redirect("/urls");
 });
 
@@ -150,7 +173,7 @@ app.get("/logout", (request, response) =>{
 
 //DISPLAY THE USERNAME LOG-OUT
 app.post("/logout", (request, response) =>{
-  response.cookie("username", "");
+  response.cookie("userid", "");
   response.redirect("/urls");
 });
 
@@ -168,9 +191,9 @@ app.post("/register",(request, response)=>{
   var email = request.body.email;
   var password = request.body.password;
   var userid = generateRandomString();
-  userData[userid] =  {id: userid, email: email, password: password};
+  userData[userid] =  {"id": userid, "email": email, "password": password};
   //response.render("url_registration", userData[userid]);
-  response.cookie("userData[userid]");
+  response.cookie("userid",userData[userid].id);
   response.redirect("/urls");
 });
 
@@ -180,5 +203,4 @@ app.post("/register",(request, response)=>{
 //listens to port if its working or not
 app.listen(PORT, () =>{
   console.log(`Example app listening on port ${PORT}!`);
-});
-
+  });

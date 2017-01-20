@@ -10,27 +10,16 @@
 
 
 
-  <% if(username) { %>
-     username :  <%= username %>
+  <% if(userid) { %>
+     userid :  <%= userDatabase[userid].email %>
     <form method="POST" action="/logout" style="display : inline;">
       <input type="Submit" value="log out">
     </form>
 
   <% } else {%>
-      <form method="POST" action="/login">
-        <input name="username" placeholder="username" type="text" style="width: 100px, display : inline;" >
-        <input name="password" placeholder="password" tyle="text" style="width: 100px, display : inline;">
-        <input type="Submit" value="sign in">
-      </form>
 
-
-
-      <form method="POST" action="/register">
-        <input type="Submit" value="register now" style="display : inline;">
-      </form>
+      <a href="/login">login</a>
+      <a href="/register">register</a>
   <% } %>
-
-
-
   <h1 id = "title"> Tiny App </h1>
 

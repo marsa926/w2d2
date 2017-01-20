@@ -16,7 +16,12 @@
       <ul>
         <% for(url in urls) { %>
           <li>
-          <%= `URLs: ${urls[url]} ---->   Shortened-URL: ${url}`%>
+          <% if (userDatabase[userid]) {%>
+            <%= `URLs: ${urls[url]} /  Shortened-URL: ${url} - ${userDatabase[userid].email}`%>
+          <% } else { %>
+            <%= `URLs: ${urls[url]} /  Shortened-URL: ${url}`%>
+            <% }; %>
+
             <input type= "submit" value = "Edit" onclick="location.href='/urls/<%=url%>';">
             <form style = "display : inline;" method = "POST" action = "/urls/<%=url%>/delete">
             <input type= "submit" value = "Delete">
