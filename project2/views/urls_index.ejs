@@ -19,7 +19,7 @@
           <% if (userDatabase[userid]) {%>
             <%= `URLs: ${urls[url]} /  Shortened-URL: ${url} - ${userDatabase[userid].email}`%>
           <% } else { %>
-            <%= `URLs: ${urls[url]} /  Shortened-URL: ${url}`%>
+            <%= `URLs:  /  Shortened-URL: `%>
             <% }; %>
 
             <input type= "submit" value = "Edit" onclick="location.href='/urls/<%=url%>';">

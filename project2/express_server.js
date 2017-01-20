@@ -18,7 +18,7 @@ var urlDatabase = {
 };
 
 const userData = {
-  "123552": {id: "123552", email: "user@example.com", password: "123"}
+  "username": {id: "username", email: "user@example.com", password: "123"}
 };
 
 
@@ -191,10 +191,14 @@ app.post("/register",(request, response)=>{
   var email = request.body.email;
   var password = request.body.password;
   var userid = generateRandomString();
+  var emailCheck =  checkEmail(email);
   userData[userid] =  {"id": userid, "email": email, "password": password};
-  //response.render("url_registration", userData[userid]);
+  if(emailCheck){
+    response.status(404).send("Account already exist!");
+  } else {
   response.cookie("userid",userData[userid].id);
   response.redirect("/urls");
+}
 });
 
 
@@ -203,4 +207,4 @@ app.post("/register",(request, response)=>{
 //listens to port if its working or not
 app.listen(PORT, () =>{
   console.log(`Example app listening on port ${PORT}!`);
-  });
+});
