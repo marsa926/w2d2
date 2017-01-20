@@ -11,7 +11,7 @@
 
 
   <% if(userid) { %>
-     userid :  <%= userDatabase[userid].email %>
+    username  ( <%= userDatabase[userid].email %> )
     <form method="POST" action="/logout" style="display : inline;">
       <input type="Submit" value="log out">
     </form>

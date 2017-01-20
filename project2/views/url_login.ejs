@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style>
+    #main {
+    background-image: url("https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/14524963_1708750169448875_4262977072518032905_o.jpg?oh=6f11e7cf36523f08f4952b88cf9c5928&oe=59189DC2");
+    background-size:100% 100vh;
+    text-align: center;
+    font-family: "Arial Black";
+    font-color: #FF0000;
+    margin-top: 200px;
+  }
+    </style>
 </head>
 
-<body>
+<body id = "main">
   <form method="POST" action="/login" style="display: inline;">
     <input name="email" type="email" placeholder="email-address">
-    <input name="password" type="password" placeholder="new password">
+    <input name="password" type="password" placeholder="password">
     <input type="Submit" value="login" style="display: inline;">
   </form>
-
-
+  <input type="Submit" value="back" style="display: inline;" onclick="location.href='/urls/';">
 </body>
 </html>

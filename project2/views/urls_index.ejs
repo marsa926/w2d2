@@ -3,21 +3,26 @@
 <head>
  <style>
   #main {
-  background-image: url("http://wallzoa.com/wp-content/uploads/2013/05/pastel-rainbow-backgrounds.jpg");
+  background-image: url("https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/14524963_1708750169448875_4262977072518032905_o.jpg?oh=6f11e7cf36523f08f4952b88cf9c5928&oe=59189DC2");
   background-size:100% 100vh;
   text-align: center;
   font-family: "Arial Black";
+  font-color: #FF0000;
 }
   </style>
    <% include ./partials/_headers %>
 </head>
 <body id = "main">
+    <font color = "white">
+    <input type = "submit" value = "CREATE NEW" onclick="location.href='/urls/new';">
+    <div align = "left">
     <h2 style="margin-top: 100px"> List of URLS </h2>
       <ul>
         <% for(url in urls) { %>
-          <li>
+
           <% if (userDatabase[userid]) {%>
-            <%= `URLs: ${urls[url]} /  ShortURLs: ${url} By ${userDatabase[userid].email}`%>
+         <p> <%= `URLs: ${urls[url]}` %></p>
+           <p> <%= `ShortURLs: http://localhost:8080/u/${url} <By ${userDatabase[userid].email} >`%></p>
           <% } else { %>
             <%= `URLs: you must log-in first!`%>
             <% }; %>
@@ -26,8 +31,10 @@
             <form style = "display : inline;" method = "POST" action = "/urls/<%=url%>/delete">
             <input type= "submit" value = "Delete">
             </form>
-          </li>
+
           <% }; %>
       </ul>
+      </div>
+      </font>
 </body>
 </html>

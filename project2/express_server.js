@@ -44,14 +44,14 @@ function checkEmail(email){
 }
 
 function generateRandomString(){
-    var shortURL = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var shortURL = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for (var i = 0; i < 6; i++){
       let randNumb = Math.floor(Math.random() * possible.length);
       shortURL += possible[randNumb];
     }
     return shortURL;
-  }
+}
 
 function updateDataBase(shortURL, newlongURL){
   urlDatabase[shortURL] = newlongURL;
@@ -59,7 +59,7 @@ function updateDataBase(shortURL, newlongURL){
 }
 ////////////////////////////////////////////////////////
 
-//this will print out Hello! on http://localhost:8008
+//this will print out Hello! on http://localhost:8080
 // app.get("/", function(request, response){
 //   response.end("Hello!");
 // });
@@ -86,7 +86,6 @@ app.get("/urls", (request, response) =>{
     userDatabase: userData,
     userid: request.session["userid"] };
   response.render("urls_index", templateVars);
-  // response.render("urls_index", { urls: urlDatabase });
 });
 
 //for urls_show, showing one shortURL and it's address
@@ -96,11 +95,11 @@ app.get("/urls/new", (request, response) =>{
  let templateVars =  {
     userDatabase: userData,
     userid: request.session["userid"] };
-  if (!templateVars){
-    response.status(403).send("You must log-in first!");
-  } else {
-    response.render("urls_new", templateVars);
-  }
+      if (!templateVars["userid"]){
+      response.status(403).send("You must log-in first!");
+      } else {
+      response.render("urls_new", templateVars);
+      }
 });
 
 ////////////////////////////////////////////////////////
@@ -116,7 +115,7 @@ app.post("/urls/new", (request, response) =>{
   var shortURL = generateRandomString();
   urlDatabase[shortURL] = longURL;
   // console.log(urlDatabase);
-  response.redirect(`/urls/${shortURL}`);
+  response.redirect(`/urls/`);
 });
 
 
@@ -130,10 +129,10 @@ app.post("/urls/:shortURL/delete", (request, response) =>{
     userid: request.session["userid"] };
     if (!templateVars){
     response.status(403).send("You must log-in first!");
-  } else {
-  delete urlDatabase[shortURL];
-  response.redirect("/urls/")
-};
+    } else {
+    delete urlDatabase[shortURL];
+    response.redirect("/urls/");
+    };
 });
 
 //UPDATE THE /URL/
@@ -141,7 +140,7 @@ app.post("/urls/:shortURL/update",(request, response) =>{
   let shortURL = request.params.shortURL;
   let newlongURL = request.body.newlongURL;
   updateDataBase(shortURL, newlongURL);
-response.redirect("/urls/");
+  response.redirect("/urls/");
 });
 
 //SHOWS THE /URLS/shortURLS/ PAGE
@@ -170,16 +169,30 @@ app.post("/login", (request, response) =>{
   let email = request.body.email;
   let userid = checkEmail(email);
   let password = request.body.password;
-  let passwordCheck = bcrypt.compareSync(password, userData[userid]["password"]);
+  console.log(email);
+  console.log(userid);
+  console.log(password);
 
-  if(passwordCheck){
+    if(userid){
+      var passwordCheck = bcrypt.compareSync(password, userData[userid]["password"]);
+        if (passwordCheck){
+          request.session["userid"] = userid;
+          response.redirect('/urls');
+        } else {
+        response.status(403).send('Something Wrong');
+        }
+    }
 
-    request.session["userid"] = userid;
 
-  } else {
-    response.status(403).send('Something Wrong');
-  }
-  response.redirect("/urls");
+    else {
+
+      response.status(403).send('User do not exist!');
+    }
+
+
+
+
+    response.redirect("/urls");
 });
 
 ////////////////////////////////////////////////////////
