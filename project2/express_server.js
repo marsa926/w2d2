@@ -1,15 +1,22 @@
+var cookieSession = require('cookie-session');
 var express = require('express');
 var app = express();
 var PORT = process.env.PORT || 8080; //default
 var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-const bcrypt = require('bcrypt');
+// var cookieParser = require('cookie-parser');
+var bcrypt = require('bcrypt');
+
 
 
 //Express app need to use EJS as templating engine.
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cookieParser());
+// app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: [/* secret keys */],
+  maxAge: 24 * 60 * 60 * 1000 //A day
+}));
 
 ////////////////////////////////////////////////////////
 
@@ -163,11 +170,6 @@ app.post("/login", (request, response) =>{
   let email = request.body.email;
   let userid = checkEmail(email);
   let password = request.body.password;
-  console.log(userid);
-  console.log(email);
-  console.log(password);
-  console.log(userData);
-
   let passwordCheck = bcrypt.compareSync(password, userData[userid]["password"]);
 
   if(passwordCheck){
