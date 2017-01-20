@@ -114,8 +114,15 @@ app.post("/urls/new", (request, response) =>{
 //DELETE THE urls on /URL/
 app.post("/urls/:shortURL/delete", (request, response) =>{
   let shortURL = request.params.shortURL;
+  let templateVars =  {
+    userDatabase: userData,
+    userid: request.cookies["userid"] };
+    if (!templateVars){
+    response.status(403).send("You must log-in first!");
+  } else {
   delete urlDatabase[shortURL];
-  response.redirect("/urls");
+  response.redirect("/urls/")
+};
 });
 
 //UPDATE THE /URL/

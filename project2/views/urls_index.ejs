@@ -17,9 +17,9 @@
         <% for(url in urls) { %>
           <li>
           <% if (userDatabase[userid]) {%>
-            <%= `URLs: ${urls[url]} /  Shortened-URL: ${url} - ${userDatabase[userid].email}`%>
+            <%= `URLs: ${urls[url]} /  ShortURLs: ${url} By ${userDatabase[userid].email}`%>
           <% } else { %>
-            <%= `URLs:  /  Shortened-URL: `%>
+            <%= `URLs: you must log-in first!`%>
             <% }; %>
 
             <input type= "submit" value = "Edit" onclick="location.href='/urls/<%=url%>';">
