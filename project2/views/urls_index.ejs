@@ -16,24 +16,23 @@
     <font color = "white">
     <input type = "submit" value = "CREATE NEW" onclick="location.href='/urls/new';">
     <div align = "left">
+
+<% if (userDatabase[userid]) {%>
     <h2 style="margin-top: 100px"> List of URLS </h2>
       <ul>
         <% for(url in urls) { %>
 
-          <% if (userDatabase[userid]) {%>
+
          <p> <%= `URLs: ${urls[url]}` %></p>
            <p> <%= `ShortURLs: http://localhost:8080/u/${url} <By ${userDatabase[userid].email} >`%></p>
-          <% } else { %>
-            <%= `URLs: you must log-in first!`%>
-            <% }; %>
-
-            <input type= "submit" value = "Edit" onclick="location.href='/urls/<%=url%>';">
+           <input type= "submit" value = "Edit" onclick="location.href='/urls/<%=url%>';">
             <form style = "display : inline;" method = "POST" action = "/urls/<%=url%>/delete">
             <input type= "submit" value = "Delete">
             </form>
 
-          <% }; %>
+          <% } %>
       </ul>
+       <% } %>
       </div>
       </font>
 </body>

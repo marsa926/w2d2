@@ -80,12 +80,24 @@ function updateDataBase(shortURL, newlongURL){
 ////////////////////////////////////////////////////////
 
 //SETS THE /urls/ PAGE LAYOUT
-app.get("/urls", (request, response) =>{
+app.get("/", (request, response) => {
   let templateVars = {
     urls: urlDatabase,
     userDatabase: userData,
     userid: request.session["userid"] };
   response.render("urls_index", templateVars);
+});
+
+app.get("/urls", (request, response) =>{
+  let templateVars = {
+    urls: urlDatabase,
+    userDatabase: userData,
+    userid: request.session["userid"] };
+   if (!templateVars["userid"]){
+      response.status(403).send("You must log-in first!");
+      } else  {
+  response.render("urls_index", templateVars);
+}
 });
 
 //for urls_show, showing one shortURL and it's address
@@ -96,7 +108,7 @@ app.get("/urls/new", (request, response) =>{
     userDatabase: userData,
     userid: request.session["userid"] };
       if (!templateVars["userid"]){
-      response.status(403).send("You must log-in first!");
+      response.status(403).send("You must log-in first! Please go back and <a href='/login'>log-in</a> first");
       } else {
       response.render("urls_new", templateVars);
       }
@@ -115,7 +127,7 @@ app.post("/urls/new", (request, response) =>{
   var shortURL = generateRandomString();
   urlDatabase[shortURL] = longURL;
   // console.log(urlDatabase);
-  response.redirect(`/urls/`);
+  response.redirect('/urls');
 });
 
 
@@ -127,11 +139,11 @@ app.post("/urls/:shortURL/delete", (request, response) =>{
   let templateVars =  {
     userDatabase: userData,
     userid: request.session["userid"] };
-    if (!templateVars){
-    response.status(403).send("You must log-in first!");
-    } else {
+    if (!templateVars["userid"]){
+      response.status(403).send("Please go back and <a href='/login'>log-in</a> first!");
+      } else  {
     delete urlDatabase[shortURL];
-    response.redirect("/urls/");
+    response.redirect("/urls");
     };
 });
 
@@ -140,7 +152,17 @@ app.post("/urls/:shortURL/update",(request, response) =>{
   let shortURL = request.params.shortURL;
   let newlongURL = request.body.newlongURL;
   updateDataBase(shortURL, newlongURL);
-  response.redirect("/urls/");
+  let templateVars =  {
+      userDatabase: userData,
+      userid: request.session["userid"] };
+
+      if (!templateVars["userid"]){
+        response.status(403).send("Please go back and <a href='/login'>log-in</a> first!");
+        }
+         else{
+        }
+  response.redirect('/urls');
+
 });
 
 //SHOWS THE /URLS/shortURLS/ PAGE
@@ -151,7 +173,14 @@ app.get("/urls/:id", (request, response) =>{
     userid: request.session["userid"],
     userDatabase: userData
   };
+    if (!templateVars["userid"]){
+      response.status(403).send("You must <a href='/login'>log-in</a> first!");
+
+      }
+      else {
   response.render("urls_show", templateVars);
+}
+
 });
 
 
@@ -179,20 +208,21 @@ app.post("/login", (request, response) =>{
           request.session["userid"] = userid;
           response.redirect('/urls');
         } else {
-        response.status(403).send('Something Wrong');
+        response.status(403).send("Possibly wrong password/id? Please try <a href='/login'>log-in</a>' again");
         }
     }
 
 
     else {
 
-      response.status(403).send('User do not exist!');
+      response.status(403).send("User do not exist! Please try <a href='/login'>log-in</a> again");
+      response.redirect('/login');
     }
 
 
 
 
-    response.redirect("/urls");
+    response.redirect("/");
 });
 
 ////////////////////////////////////////////////////////
@@ -207,7 +237,7 @@ app.get("/logout", (request, response) =>{
 app.post("/logout", (request, response) =>{
 
   request.session["userid"] = "";
-  response.redirect("/urls");
+  response.redirect('/');
 });
 
 ////////////////////////////////////////////////////////
@@ -228,11 +258,11 @@ app.post("/register",(request, response)=>{
   var emailCheck =  checkEmail(email);
   userData[userid] =  {"id": userid, "email": email, "password": hashed_password};
   if(emailCheck){
-    response.status(404).send("Account already exist!");
+    response.status(404).send("Account already exist! Try another email <a href='/register'>Register</a>");
   } else {
 
   request.session["userid"] = userData[userid].id;
-  response.redirect("/urls");
+  response.redirect('/urls');
 }
 });
 
